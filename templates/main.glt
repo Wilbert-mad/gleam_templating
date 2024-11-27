@@ -1,0 +1,26 @@
+{# {% input {
+  some_fn: fn() -> Nil
+  data: MainTemplateData
+} %} #}
+
+{{
+  assert 
+    False
+}}
+
+Hello, {{ name }}!
+
+{# {% echo__badname__nouse %} #}
+
+{#
+
+  {% macro if(condition: Bool) %}
+    {% 
+      case list.length(slot), bool.is(condition) {
+        True, True -> echo__badname__nouse(slot)
+        _, _ -> Nil
+      }
+    %}
+  {% endmacro %}
+
+#}
