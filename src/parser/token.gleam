@@ -62,14 +62,16 @@ pub type Token {
 
   Ident(String)
   String(String)
+  Int(Int)
+  Float(Float)
 
-  // Int(String)
-  // Float(String)
   /// Special type of ident
   KW(KWToken)
 }
 
 pub type KWToken {
+  As
+  Fn
   Macro
   Let
   End

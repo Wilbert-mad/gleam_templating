@@ -1,11 +1,13 @@
-// https://linear.app/
-
 import chomp/lexer
+import gleam/regex
 import gleam/set
 import parser/token
 
 pub type Lx =
   lexer.Lexer(token.Token, LexMode)
+
+pub type LxMatch =
+  lexer.Matcher(token.Token, LexMode)
 
 pub type LexMode {
   Txt
@@ -42,6 +44,8 @@ pub fn gen_lex() -> Lx {
   let kw_use = lexer.keyword("use", "\\W", token.KW(token.Use))
   let kw_todo = lexer.keyword("todo", "\\W", token.KW(token.Todo))
   let kw_panic = lexer.keyword("panic", "\\W", token.KW(token.Panic))
+  let kw_as = lexer.keyword("as", "\\W", token.KW(token.As))
+  let kw_fn = lexer.keyword("fn", "\\W", token.KW(token.Fn))
   let string = lexer.string("\"", fn(str) { token.String(str) })
   let ident =
     lexer.identifier(
@@ -49,7 +53,7 @@ pub fn gen_lex() -> Lx {
       "[a-zA-Z0-9_]",
       set.from_list([
         "macro", "let", "end", "case", "extends", "assert", "use", "todo",
-        "panic",
+        "panic", "as", "fn",
       ]),
       token.Ident,
     )
@@ -63,6 +67,7 @@ pub fn gen_lex() -> Lx {
     })
 
   let block_kws = [
+    kw_as,
     kw_macro,
     kw_let,
     kw_end,
@@ -72,12 +77,12 @@ pub fn gen_lex() -> Lx {
     kw_use,
     kw_todo,
     kw_panic,
+    kw_fn,
   ]
 
   let block = [
     ident,
     string,
-    // lx_num(),
     sided_arrow(),
     dotdot_or_dot(),
     left_curly,
@@ -94,6 +99,8 @@ pub fn gen_lex() -> Lx {
     gt_lt_e(),
     gt,
     lt,
+    // TODO: support Octal, Binary, and Hex
+    lex_intxfloat(),
     ..block_kws
   ]
 
@@ -106,12 +113,11 @@ pub fn gen_lex() -> Lx {
   }
 }
 
-fn lx_num() {
-  use mode, tx, lookagead <- lexer.custom()
-
-  todo
+fn lex_intxfloat() {
+  lexer.number(fn(i) { token.Int(i) }, fn(f) { token.Float(f) })
 }
 
+/// Matches either '=' or '=='
 fn equal_equal_or_equal() {
   use mode, tx, lookahead <- lexer.custom()
 

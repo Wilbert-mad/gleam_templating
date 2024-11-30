@@ -1,5 +1,6 @@
 import chomp/span.{type Span}
 import gleam/option
+import ir/typings as ir
 
 pub type Idn =
   String
@@ -61,24 +62,24 @@ pub type Node {
   // /// }}
   // /// ```
   // // Case
-  // /// ```glt
-  // /// {{ let ?assert <pat>: <ty> = <expr> ?[as <assert_message>] }}
-  // /// ```
-  // Let(
-  //   asserted: option.Option(Bool),
-  //   pat: Pattern,
-  //   ty: option.Option(Type),
-  //   expr: Expr,
-  //   assert_message: option.Option(String),
-  // )
+  /// ```glt
+  /// {{ let ?assert <pat> ?[: <ty>] = <expr> ?[as <assert_message>] }}
+  /// ```
+  Let(
+    asserted: Bool,
+    pat: Pattern,
+    ty: option.Option(ir.Type),
+    expr: Expr,
+    assert_message: option.Option(String),
+  )
   /// ```glt
   /// {% assert <expr> ?[as <assert_message>] %}
   /// ```
-  AssertExpr(expr: Expr, assert_message: option.Option(String))
+  AssertExpr(expr: Expr, expr_span: Span, assert_message: option.Option(String))
   /// ```glt
   /// {{ <expr> }}
   /// ```
-  NodeExpr(Expr)
+  NodeExpr(Expr, span: Span)
 }
 
 // WIP
@@ -89,23 +90,41 @@ pub type Expr {
   Bool(Bool)
   String(String)
   Variable(Idn)
+  FieldAccess(field: String, box: Expr)
   UnOp(op: UnOperator, expr: Expr)
-  // BinOp(
-  //   rh: Expr,
-  //   op: ,
-  //   lh: Expr
-  // )
+  BinOp(lh: Expr, op: BinOperator, rh: Expr)
 }
 
 pub type UnOperator {
   /// '-'
-  Minus
+  UnopMinus
   /// '!'
-  Negate
+  UnopNegate
+}
+
+pub type BinOperator {
+  /// '-'
+  BinopMinusInt
+  /// '+'
+  BinopPlusInt
+  /// '*'
+  BinopMultInt
+  /// '/'
+  BinopDivInt
+  /// '-.'
+  BinopMinusFloat
+  /// '+.'
+  BinopPlusFloat
+  /// '*.'
+  BinopMultFloat
+  /// '/.'
+  BinopDivFloat
+  /// '=='
+  BinopEquality
+  /// '!='
+  BinopInEquality
 }
 
 pub type Pattern {
-  PVar(span: Span, name: Idn)
+  PatVar(span: Span, name: Idn)
 }
-
-pub type Type

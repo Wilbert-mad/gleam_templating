@@ -3,9 +3,11 @@
   data: MainTemplateData
 } %} #}
 
+{{ let}}
+
 {{
-  assert 
-    False
+   assert 
+    1 == 1 as "test"
 }}
 
 Hello, {{ name }}!
