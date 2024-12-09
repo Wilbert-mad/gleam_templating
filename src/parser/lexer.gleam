@@ -46,14 +46,16 @@ pub fn gen_lex() -> Lx {
   let kw_panic = lexer.keyword("panic", "\\W", token.KW(token.Panic))
   let kw_as = lexer.keyword("as", "\\W", token.KW(token.As))
   let kw_fn = lexer.keyword("fn", "\\W", token.KW(token.Fn))
+  let kw_echo = lexer.keyword("echo", "\\W", token.KW(token.Fn))
+  let kw_echo_unsafe = lexer.keyword("echo_unsafe", "\\W", token.KW(token.Fn))
   let string = lexer.string("\"", fn(str) { token.String(str) })
   let ident =
     lexer.identifier(
-      "[a-zA-Z]",
+      "[a-zA-Z_]",
       "[a-zA-Z0-9_]",
       set.from_list([
         "macro", "let", "end", "case", "extends", "assert", "use", "todo",
-        "panic", "as", "fn",
+        "panic", "as", "fn", "echo", "echo_unsafe",
       ]),
       token.Ident,
     )
@@ -78,6 +80,8 @@ pub fn gen_lex() -> Lx {
     kw_todo,
     kw_panic,
     kw_fn,
+    kw_echo,
+    kw_echo_unsafe,
   ]
 
   let block = [

@@ -71,6 +71,7 @@ pub type Node {
     ty: option.Option(ir.Type),
     expr: Expr,
     assert_message: option.Option(String),
+    assert_span: option.Option(Span),
   )
   /// ```glt
   /// {% assert <expr> ?[as <assert_message>] %}
@@ -80,6 +81,8 @@ pub type Node {
   /// {{ <expr> }}
   /// ```
   NodeExpr(Expr, span: Span)
+  /// Tag is invalid
+  Error
 }
 
 // WIP
@@ -90,6 +93,8 @@ pub type Expr {
   Bool(Bool)
   String(String)
   Variable(Idn)
+  // Case
+  // IfElse
   FieldAccess(field: String, box: Expr)
   UnOp(op: UnOperator, expr: Expr)
   BinOp(lh: Expr, op: BinOperator, rh: Expr)
@@ -126,5 +131,13 @@ pub type BinOperator {
 }
 
 pub type Pattern {
-  PatVar(span: Span, name: Idn)
+  Pattern(kind: PatKind, span: Span)
+}
+
+pub type PatKind {
+  PatVar(Idn)
+  PatDiscordVar(Idn)
+  PatInt(Int)
+  PatFloat(Float)
+  PatTuple(List(Pattern))
 }

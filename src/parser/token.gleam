@@ -81,4 +81,6 @@ pub type KWToken {
   Use
   Todo
   Panic
+  Echo
+  EchoUnsafe
 }

@@ -26,21 +26,23 @@ stateDiagram-v2
       some day
     end note
 
-    IrTyAnalysis --> Fragmentization
-    Fragmentization --> ErlangCompose
-    note left of ErlangCompose
-      Finalized fragments are passed to erlang and tranformed using macros to dynamic *typesafe* functions.
-    end note
-    ErlangCompose --> sf_gen_rfn()
-    note left of sf_gen_rfn()
-      "sf_gen_rfn -> safe_generation_render_func"
-      A quick intermediation between gen_render_fn() to appropriately return Ok(fn(..) -> String) or Error(_) to gleam
-    end note
-    sf_gen_rfn() --> gen_render_fn()
-    gen_render_fn() --> MacroGenFragments
-    MacroGenFragments --> MacroGenFrag
-    MacroGenFrag --> Text
-    MacroGenFrag --> compose_expr()
+    IrTyAnalysis --> CompileToErlExpr
+    CompileToErlExpr --> [Execute]
+    %% IrTyAnalysis --> Fragmentization
+    %% Fragmentization --> ErlangCompose
+    %% note left of ErlangCompose
+    %%   Finalized fragments are passed to erlang and tranformed using macros to dynamic *typesafe* functions.
+    %% end note
+    %% ErlangCompose --> sf_gen_rfn()
+    %% note left of sf_gen_rfn()
+    %%   "sf_gen_rfn -> safe_generation_render_func"
+    %%   A quick intermediation between gen_render_fn() to appropriately return Ok(fn(..) -> String) or Error(_) to gleam
+    %% end note
+    %% sf_gen_rfn() --> gen_render_fn()
+    %% gen_render_fn() --> MacroGenFragments
+    %% MacroGenFragments --> MacroGenFrag
+    %% MacroGenFrag --> Text
+    %% MacroGenFrag --> compose_expr()
 ```
 
 # Type detection from gleam to templates
